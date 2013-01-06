@@ -14,11 +14,11 @@ import org.rexify.eclipse.popup.actions.AnyMenu;
 public class AnyMenuItem extends ContributionItem {
 	public AnyMenuItem() {
 	}
-	
+
 	public AnyMenuItem(String id) {
 		super(id);
 	}
-	
+
 	@Override
 	public boolean isDynamic() {
 		return true;

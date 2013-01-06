@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -12,18 +13,23 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.ide.IDE;
+import org.rexify.eclipse.helper.InternetHelper;
+import org.rexify.eclipse.model.TemplateModel;
 
 public class AnyMenu {
 
 	static public SelectionAdapter getCreateRexfileAction() {
-		
+
 		return new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// System.out.println(AnyMenu.getProjectPath());
@@ -42,7 +48,23 @@ public class AnyMenu {
 					// Messagebox that rexfile already exists.
 				}
 				else {
-					String rexfile_template = "use Rex -base;\n\ntask 'build', sub {\n   build;\n};\n";
+					//HashMap<String, String> template_list = new HashMap<String, String>();
+					//template_list.put("Mac", "bar");
+					//template_list.put("Linux", "bar");
+					HashMap<String, TemplateModel> template_list = InternetHelper.getTemplates();
+					
+					String[] foo = template_list.keySet().toArray(new String[0]);
+					
+					ElementListSelectionDialog dialog = new ElementListSelectionDialog(null, new LabelProvider());
+					dialog.setElements(foo);
+					dialog.setTitle("Choose a Template");
+					if(dialog.open() != Window.OK) {
+						return;
+					}
+					
+					System.out.println("Selected: " + dialog.getResult()[0]);
+
+					String rexfile_template = template_list.get(dialog.getResult()[0].toString()).getTemplateCode();
 					InputStream is = new ByteArrayInputStream(rexfile_template.getBytes());
 					
 					try {
