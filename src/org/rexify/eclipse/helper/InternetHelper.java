@@ -24,7 +24,7 @@ public class InternetHelper {
 		JSONParser parser = new JSONParser();
 		
 		try {
-			Object obj = parser.parse(GET("http://localhost:3000/"));
+			Object obj = parser.parse(GET("http://templates.rexify.org/index.json"));
 			JSONArray arr = (JSONArray)obj;
 			Iterator iter = arr.iterator();
 			
@@ -57,7 +57,7 @@ public class InternetHelper {
 			}
 			else {
 				// Use a sane fallback
-				return "[{\"name\": \"Empty\", \"template\": \"# Rexfile\nuse Rex -base;\n\"}]";
+				return "[{\"name\": \"Empty Skeleton\", \"template\": \"# Rexfile\nuse Rex -base;\n\"}]";
 			}
 		} catch(ClientProtocolException pro_ex) {
 			// display error message
@@ -68,7 +68,7 @@ public class InternetHelper {
 		}
 		
 		// Use a sane fallback
-		return "[{\"name\": \"Empty\", \"template\": \"# Rexfile\nuse Rex -base;\n\"}]";
+		return "[{\"name\": \"Empty Skeleton\", \"template\": \"# Rexfile\nuse Rex -base;\n\"}]";
 	}
 	
 	static public String convertStreamToString(InputStream is) {
