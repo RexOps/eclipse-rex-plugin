@@ -10,4 +10,6 @@ If you have wishes/suggestions please use the Issue Tracker.
 
 This Plugin needs Rex 0.37 or higher.
 
+## Screenshot
+
 ![screenshot](https://raw.github.com/krimdomu/eclipse-rex-plugin/master/doc/eclipse-plugin.png)
