@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.epic.lib;bundle-version="0.6.1",
  org.epic.perleditor;bundle-version="0.6.32",
  org.epic.regexp;bundle-version="0.6.1",
- org.epic.source;bundle-version="0.6.45"
+ org.epic.source;bundle-version="0.6.45",
+ org.eclipse.ui.console;bundle-version="3.5.100"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/json-simple-1.1.1.jar,

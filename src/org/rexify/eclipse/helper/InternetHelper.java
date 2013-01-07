@@ -26,6 +26,8 @@ public class InternetHelper {
 		try {
 			Object obj = parser.parse(GET("http://templates.rexify.org/index.json"));
 			JSONArray arr = (JSONArray)obj;
+			
+			@SuppressWarnings("rawtypes")
 			Iterator iter = arr.iterator();
 			
 			while(iter.hasNext()) {

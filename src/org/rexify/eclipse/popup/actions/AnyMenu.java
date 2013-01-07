@@ -1,28 +1,24 @@
 package org.rexify.eclipse.popup.actions;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.File;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.eclipse.ui.ide.IDE;
+import org.rexify.eclipse.helper.CommandLine;
+import org.rexify.eclipse.helper.EclipseHelper;
 import org.rexify.eclipse.helper.InternetHelper;
 import org.rexify.eclipse.model.TemplateModel;
 
@@ -33,7 +29,7 @@ public class AnyMenu {
 		return new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// System.out.println(AnyMenu.getProjectPath());
-				IProject selected_project = AnyMenu.getProject();
+				IProject selected_project = EclipseHelper.getProject();
 				if(selected_project.exists() && !selected_project.isOpen()) {
 					try {
 						selected_project.open(null);
@@ -69,7 +65,7 @@ public class AnyMenu {
 					
 					try {
 						rexfile.create(is, true, null);
-						AnyMenu.openEditor(rexfile);
+						EclipseHelper.openEditor(rexfile);
 					} catch(CoreException ex) {
 						// Display error message
 					}
@@ -85,73 +81,29 @@ public class AnyMenu {
 		return new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("Running Task: " + task_name);
+				List<String> cmd = new ArrayList<String>();
 
-				Runtime run = Runtime.getRuntime();
-				try {
-					// if rex is installed via cpan this is not needed.
-					String[] s = {"PERL5LIB=/Users/jan/Projekte/rex/lib", "PATH=/Users/jan/Projekte/rex/bin:/Users/jan/perl5/perlbrew/perls/perl-5.14.2/bin:/usr/bin:/usr/local/bin:/bin:/opt/local"};
-					//String[] s = {};
-					
-					Process p = run.exec("rex -m " + task_name, s, AnyMenu.getProjectPath().toFile());
-					p.waitFor();
-					BufferedReader buf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-					String line;
-					while( (line = buf.readLine()) != null) {
-						System.out.println(line);
-					}
-				} catch(IOException ex) {
-					// Display error message
-					System.out.println(ex.toString());
-				} catch(InterruptedException int_ex) {
-					// Display error message
-					System.out.println(int_ex.toString());
+				if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+					cmd.add("cmd");
+					cmd.add("/C");
+					cmd.add("rex.bat -m " + task_name + " 2>&1");
+				}
+				else {
+					cmd.add("/bin/sh");
+					cmd.add("-c");
+					cmd.add("rex -m " + task_name + " 2>&1");
 				}
 				
+				File path = EclipseHelper.getProjectPath().toFile();
+
+				MessageConsole console = EclipseHelper.findConsole("Rex Console");
+				MessageConsoleStream out = console.newMessageStream();
+
+				CommandLine.run(cmd, path, out);
+
 			}
 		};
 	}
 	
-	static public IProject getProject() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-	    if (window != null) {
-	        IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
-	        Object firstElement = selection.getFirstElement();
-	        if (firstElement instanceof IProject) {
-	            IProject project = (IProject)((IAdaptable)firstElement).getAdapter(IProject.class);
-	            return project;
-	        }
-	    }
-	    
-	    return null;
-	}
-	
-	static public IPath getProjectPath() {
 
-		IProject project = AnyMenu.getProject();
-		if(project != null) {
-            IPath path = project.getLocation();
-	        return path;
-	    }
-	
-	    return null;
-	}
-	
-	static public boolean isProjectSelected() {
-		IProject project = AnyMenu.getProject();
-		if(project != null) {
-			return true;
-	    }
-	    
-	    return false;
-	}
-	
-	static public void openEditor(IFile file) {
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try {
-			IDE.openEditor(page, file);
-		} catch(PartInitException ex) {
-			// Display error message
-			System.out.println(ex.toString());
-		}
-	}
 }
