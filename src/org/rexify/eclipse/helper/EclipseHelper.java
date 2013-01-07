@@ -23,24 +23,13 @@ public class EclipseHelper {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager console_manager = plugin.getConsoleManager();
 		IConsole[] existing_consoles = console_manager.getConsoles();
-		for(int i = 0; i < existing_consoles.length; i++)
+		for (int i = 0; i < existing_consoles.length; i++)
 			if(name.equals(existing_consoles[i].getName()))
-				return (MessageConsole)existing_consoles[i];
+				return (MessageConsole) existing_consoles[i];
 		
-		// no console found, create new one
 		MessageConsole console = new MessageConsole(name, null);
-		console_manager.addConsoles(new IConsole[]{ console });
-		
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		String id = IConsoleConstants.ID_CONSOLE_VIEW;
-		
-		try {
-			IConsoleView view = (IConsoleView)page.showView(id);
-			view.display(console);
-		} catch(PartInitException pex) {
-			// Display error message
-		}
-		
+		console_manager.addConsoles(new IConsole[] { console });
+		console_manager.showConsoleView(console);
 		return console;
 	}
 	

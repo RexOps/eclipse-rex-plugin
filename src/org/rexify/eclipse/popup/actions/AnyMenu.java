@@ -3,6 +3,7 @@ package org.rexify.eclipse.popup.actions;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,8 +99,17 @@ public class AnyMenu {
 
 				MessageConsole console = EclipseHelper.findConsole("Rex Console");
 				MessageConsoleStream out = console.newMessageStream();
+				
+				PrintStream default_out = System.out;
+				PrintStream default_err = System.err;
+				
+				System.setOut(new PrintStream(out));
+				System.setErr(new PrintStream(out));
 
-				CommandLine.run(cmd, path, out);
+				CommandLine.run(cmd, path);
+				
+				System.setOut(default_out);
+				System.setErr(default_err);
 
 			}
 		};

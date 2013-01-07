@@ -7,14 +7,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ui.console.MessageConsoleStream;
-
 public class CommandLine {
 
-	static public List<String> run(List<String> cmd, File wd, MessageConsoleStream out) {
+	static public List<String> run(List<String> cmd, File wd) {
 		List<String> ret = new ArrayList<String>();
-		
-		System.out.println("running command: " + cmd.get(0));
 		
 		try {
 			ProcessBuilder builder = new ProcessBuilder(cmd);
@@ -26,27 +22,18 @@ public class CommandLine {
 			
 			String line;
 
-			while( (line = err_buf.readLine()) != null) {
-				System.out.println("Error: " + line);
-
-				if(out != null) {
-					out.println("ERROR: " + line);
-				}
-			}
-
-			err_buf.close();
-
-			
 			while( (line = buf.readLine()) != null) {
-				System.out.println(">> " + line);
+				System.out.println(line);
 				ret.add(line);
-				if(out != null) {
-					out.println(line);
-				}
 			}
 			
 			buf.close();
 
+			while( (line = err_buf.readLine()) != null) {
+				System.out.println("Error: " + line);
+			}
+
+			err_buf.close();
 
 			process.waitFor();
 
@@ -62,8 +49,4 @@ public class CommandLine {
 		return null;
 	}
 	
-	static public List<String> run(List<String> cmd, File wd) {
-		return run(cmd, wd, null);
-	}
-
 }
