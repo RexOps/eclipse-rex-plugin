@@ -2,12 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse
 Bundle-SymbolicName: org.rexify.eclipse; singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: org.rexify.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.ui.ide;bundle-version="3.8.1"
+ org.eclipse.ui.ide;bundle-version="3.8.1",
+ org.epic.debug;bundle-version="0.6.32",
+ org.epic.doc;bundle-version="0.6.2",
+ org.epic.lib;bundle-version="0.6.1",
+ org.epic.perleditor;bundle-version="0.6.32",
+ org.epic.regexp;bundle-version="0.6.1",
+ org.epic.source;bundle-version="0.6.45"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/json-simple-1.1.1.jar,
